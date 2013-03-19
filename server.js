@@ -16,16 +16,38 @@ app.get('/', function(req, res){
         res.send(JSON.stringify(resBody, null, 4));
 });
 
+app.post('/echopost', function(req, res) {
+    console.log("GOT BODY:"+JSON.stringify(req.body));
+    
+    res.statusCode = 200;
+    res.send(req.body);
+});
+
 app.post('/reg', function(req, res){
     if (req.body) {
-      console.log("user:"+req.body.username);
-      console.log("pass:"+req.body.password);
-      console.log("mac:"+req.body.mac);
-      console.log("location:"+req.body.location);
-      res.send(JSON.stringify(resBody, null, 4));
+        for(var i in req.body) {
+            console.log(i +':'+req.body[i]);
+        }
+
+        if (req.body.email=== "maks" && req.body.password === "pass1") {
+          if (req.body.nickname === "test1") {
+              console.log("Sending 406 - nick already used");
+              res.statusCode = 406;
+              res.send("Device Nickname already in use");
+              return;
+          }
+          res.send(JSON.stringify(resBody, null, 4));
+
+        } else {
+            console.log("Sending 403 - invalid login");
+            res.statusCode = 403;
+            res.send("Invalid Username or Password");
+            return;
+        }
     } else {
         console.log("no username");
         res.send("{ }\n");
+        return;
     }
 });
 
